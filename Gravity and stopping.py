@@ -1,10 +1,11 @@
+#realistic gravity
+
 import pygame,sys
 import random
  
 pygame.init()
 clock = pygame.time.Clock()
 FPS = 60
-
 
 screen_width,screen_height = 600,600
 
@@ -19,13 +20,23 @@ class Block(pygame.Rect):
         self.color = (255,0,0)
         self.dy, self.dx, self.gravity = 0, 2, 0.4
         self.speed = [random.random() * 5 - 2.5, random.random() * 5 - 2.5]
- 
-    def update(self):
-        pygame.draw.rect(screen, self.color, self.rect)
+    
+    def jump(self):
         self.dy -= self.gravity 
         self.rect.y -= self.dy 
         self.rect.x += self.dx
- 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.rect.y -= 30
+            if self.rect.y > 550:
+                self.dy *= -0.75
+            if self.dy < 2:
+                self.dy = 0
+                self.dx = 0
+
+    def update(self):
+        pygame.draw.rect(screen, self.color, self.rect)
+        
         if self.rect.y > 550:
             self.dy *= -0.75
             if self.dy < 2:
@@ -34,7 +45,9 @@ class Block(pygame.Rect):
  
         if self.rect.x > 550 or self.rect.x < 0:
             self.dx *= -1
- 
+
+        self.jump()
+       
 blocks = []
 for i in range(1):
     # x = random.randint(0, 600)
